@@ -1,17 +1,28 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
+var mongoose = require('mongoose');
+var bluebird = require('bluebird');
 var logger = require('./logger');
+var glob = require('glob');
+
 module.exports = function (app, config) {
 
-    // app.use(function (req, res, next) {
-    //     logger.log('info', 'Request from ' + req.connection.remoteAddress);
-    //     next();
-    // });
-    // app.use(morgan('dev'));
+    logger.log('info', "Loading Mongoose functionality");
+    mongoose.Promise = bluebird;
+    mongoose.connect(config.db);
+    var db = mongoose.connection;
+    db.on('error', function () {
+        throw new Error('unable to connect to database at ' + config.db);
+    });
 
     if (process.env.NODE_ENV !== 'test') {
         app.use(morgan('dev'));
+
+        mongoose.set('debug', true);
+        mongoose.connection.once('open', function callback() {
+            logger.log('info', 'Mongoose connected to the database');
+        });
 
         app.use(function (req, res, next) {
             logger.log('Request from ' + req.connection.remoteAddress, 'info');
@@ -27,18 +38,19 @@ module.exports = function (app, config) {
     app.use(bodyParser.json());
 
     app.use(express.static(config.root + '/public'));
-    var users = [
-        { name: 'John', email: 'woo@hoo.com' },
-        { name: 'Betty', email: 'loo@woo.com' },
-        { name: 'Hal', email: 'boo@woo.com' }
-    ];
+  
+    var models = glob.sync(config.root + '/app/models/*.js');
+    models.forEach(function (model) {
+        require(model);
+    });
 
+    var controllers = glob.sync(config.root + '/app/controllers/*.js');
+    controllers.forEach(function (controller) {
+        require(controller)(app, config);
+    });
     app.get('/api/users', function (req, res) {
         res.status(200).json(users);
     });
-
-
-    require('../app/controllers/users')(app, config);
 
     app.use(function (req, res) {
         logger.log('error', 'File not found!');
