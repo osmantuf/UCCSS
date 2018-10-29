@@ -48,9 +48,6 @@ module.exports = function (app, config) {
     controllers.forEach(function (controller) {
         require(controller)(app, config);
     });
-    app.get('/api/users', function (req, res) {
-        res.status(200).json(users);
-    });
 
     app.use(function (req, res) {
         logger.log('error', 'File not found!');
