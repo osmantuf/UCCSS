@@ -3,8 +3,12 @@ var express = require('express'),
     logger = require('../../config/logger'),
     mongoose = require('mongoose'),
     User = mongoose.model('User'),
-    asyncHandler = require('express-async-handler');
+    asyncHandler = require('express-async-handler'),
+    passportService = require('../../config/passport'),
+    passport = require('passport');
 
+
+var requireLogin = passport.authenticate('local', { session: false });
 
 module.exports = function (app, config) {
     app.use('/api', router);
@@ -50,14 +54,8 @@ module.exports = function (app, config) {
             })
     }));
 
-    router.post('/login', function (req, res, next) {
-        console.log(req.body);
-        var email = req.body.email
-        var password = req.body.password;
+    router.route('/users/login').post(requireLogin, login);
 
-        var obj = { 'email': email, 'password': password };
-        res.status(201).json(obj);
-    });
 
 
 };
