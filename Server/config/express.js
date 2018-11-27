@@ -5,9 +5,12 @@ var mongoose = require('mongoose');
 var bluebird = require('bluebird');
 var logger = require('./logger');
 var glob = require('glob');
+var cors = require('cors');
+
 
 module.exports = function (app, config) {
 
+    app.use(cors({origin: 'http://localhost:9000'}));
     logger.log('info', "Loading Mongoose functionality");
     mongoose.Promise = bluebird;
     mongoose.connect(config.db);
