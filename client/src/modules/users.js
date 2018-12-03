@@ -25,7 +25,7 @@ export class Users {
             firstName: "",
             lastName: "",
             active: true,
-            role: "user",
+            role: "",
             email: "",
             password: ""
         }
