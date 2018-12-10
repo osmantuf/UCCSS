@@ -10,7 +10,8 @@ var config = {
         },
         port: 5000,
         db: 'mongodb://127.0.0.1/helpMe-dev',
-        secret: "cayennedlikedhistreats"
+        secret: "cayennedlikedhistreats",
+        uploads:'./public/uploadedFiles'
 
     },
     
@@ -19,7 +20,8 @@ var config = {
         app: { name: 'UCCSS' },
         port: 4000,
         db: 'mongodb://127.0.0.1/helpMe-test',
-        secret: "cayennedlikedhistreats"
+        secret: "cayennedlikedhistreats",
+        uploads:'./public/uploadedFiles'
 
     },
 
@@ -28,7 +30,8 @@ var config = {
         app: { name: 'UCCSS' },
         port: 80,
         db: 'mongodb://127.0.0.1/helpMe',
-        secret: "cayennedlikedhistreatscayennedlikedhistreats"
+        secret: "cayennedlikedhistreats",
+        uploads:'./public/uploadedFiles'
 
     }
 };
