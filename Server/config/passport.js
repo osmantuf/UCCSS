@@ -49,4 +49,22 @@ login = function (req, res, next) {
     res.status(200).json({ token: generateToken(userInfo), user: req.user });
 };
 
+var jwtOptions = {
+    jwtFromRequest: extractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: config.secret
+};
+
+var jwtLogin = new jwtStrategy(jwtOptions, function (payload, next) {
+    User.findById(payload._id).exec()
+        .then(function (user) {
+            if (user) {
+                return next(null, user);
+            } else {
+                return next(null, false);
+            }
+        })
+        .catch(function (err) { return next(err); });
+});
+
+passport.use(jwtLogin);
 passport.use(localLogin);
