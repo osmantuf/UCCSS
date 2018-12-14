@@ -35,11 +35,11 @@ export class HelpTickets {
             ownerId: "a1a1a1a1a1a1a1a1a1a1a1a1",
             status: 'new'
         };
-
         this.helpTicketContent = {
             personId: this.userObj._id,
             content: ""
         };
+        this.helpTickets.helpTicketContentsArray = [];
         this.showEditForm();
     }
 
