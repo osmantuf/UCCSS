@@ -80,10 +80,18 @@ export class HelpTickets {
             let helpTicket = { helpTicket: this.helpTicket, content: this.helpTicketContent };
             let serverResponse = await this.helpTickets.saveHelpTicket(helpTicket);
             if (this.filesToUpload && this.filesToUpload.length > 0) {
-                this.helpTickets.uploadFile(this.filesToUpload, serverResponse.contentID);
-                await this.getHelpTicket();
-                this.back();
+                this.helpTickets.uploadFile(this.filesToUpload, serverResponse.contentID); 
             }
+            await this.getHelpTicket();
+            this.back();
         }
     }
+
+    async delete() {
+            if (this.helpTicket && this.helpTicketContent) {        
+              await this.helpTickets.delete(this.helpTicket);
+              await this.getHelpTicket();
+              this.back();
+            }
+          }
 }

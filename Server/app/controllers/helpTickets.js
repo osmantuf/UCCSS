@@ -49,7 +49,7 @@ module.exports = function (app, config) {
                     var helpTicketContent = new HelpTicketContent(req.body.content);
                     helpTicketContent.save()
                         .then(content => {
-                            res.status(201).json({contentID: content._id});
+                                                        res.status(201).json({ contentID: content._id });
                         })
                 } else {
                     res.status(200).json(result);
@@ -67,7 +67,7 @@ module.exports = function (app, config) {
                 var helpTicketContent = new HelpTicketContent(req.body.content);
                 helpTicketContent.save()
                     .then(content => {
-                        res.status(201).json({contentID: content._id});
+                        res.status(201).json({ contentID: content._id });
                     })
             })
     }));
@@ -75,6 +75,12 @@ module.exports = function (app, config) {
 
     router.delete('/helpTickets/:id', asyncHandler(async (req, res) => {
         logger.log('info', 'Deleting HelpTicket %s', req.params.id);
+        await HelpTicketContent.remove({
+            helpTicketId: req.params.id
+        })
+            .then(result => {
+                res.status(200).json(result);
+            })
         await HelpTicket.remove({ _id: req.params.id })
             .then(result => {
                 res.status(200).json(result);
@@ -124,20 +130,20 @@ module.exports = function (app, config) {
     });
     var upload = multer({ storage: storage });
     router.post('/helpTicketContents/upload/:id', upload.any(), asyncHandler(async (req, res) => {
-         logger.log('info', 'Uploading files');
-         await HelpTicketContent.findById(req.params.id).then(result => {
-            for(var i = 0, x = req.files.length; i<x; i++){         
-             var file = {
-                originalFileName: req.files[i].originalname,
-                fileName: req.files[i].filename
-             };
-                 result.file = file;
-            }
-            result.save().then(result => {
-                res.status(200).json(result);
-            });
-         })
-     }));
+        logger.log('info', 'Uploading files');
+        await HelpTicketContent.findById(req.params.id).then(result => {
+                        for (var i = 0, x = req.files.length; i < x; i++) {
+                var file = {
+                                    originalFileName: req.files[i].originalname,
+                                    fileName: req.files[i].filename
+                };
+                result.file = file;
+                        }
+                        result.save().then(result => {
+                                res.status(200).json(result);
+                        });
+        })
+    }));
 
 
 
